@@ -4,14 +4,14 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import wi.dao.face.JoinDao;
+import wi.dao.face.MemberDao;
 import wi.dto.Member;
 
 @Repository
-public class JoinDaoImpl implements JoinDao {
+public class MemberDaoImpl implements MemberDao {
 
 	@Autowired SqlSession sqlSession;
-	String namespace = "JoinMapper.";
+	String namespace = "MemberMapper.";
 	
 	// 회원등록하기
 	@Override

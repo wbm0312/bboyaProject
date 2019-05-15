@@ -2,7 +2,7 @@ package wi.service.face;
 
 import wi.dto.Member;
 
-public interface JoinService {
+public interface MemberService {
 	
 	// 회원등록하기
 	public void joinMember(Member member) throws Exception;

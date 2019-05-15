@@ -33,7 +33,7 @@
 			    <dl>
 				<dt class="active">개인정보 입력</dt>
 		<dd>
-	    <form id="actionForm" name="actionForm" action="/member/register" method="post">
+	    <form id="actionForm" name="actionForm" action="/join/register" method="post" onsubmit="return false;">
 
 		<div class="join_info_guide">
 	       <dl>
@@ -42,7 +42,7 @@
 		   <dd>각 회원의 신상정보에 대해서는 "신용정보의 이용 및 보호에 관한 법률"에 의거 완벽한 보안을 유지합니다.</dd>
 		   </dl>
            <span class="custom_form"> 
-             <input type="checkbox" id="agree_all" name="areeAll" onclick="checkAll();"> 
+             <input type="checkbox" id="agree_all" name="areeAll" onclick="checkAll();" value="0"> 
              <label for="agree_all" class="ip_chk"> 
              <em></em> <span>전체약관동의</span>
 			 </label>
@@ -88,7 +88,7 @@
 		  </dl>
 		  
 		  <span class="custom_form"> 
-             <input type="checkbox" id="check1" name="checkRow"> 
+             <input type="checkbox" id="check1" name="checkRow" value="0"> 
              <label for="agree_all" class="ip_chk"> 
              <em></em> <span>이용약관 동의 (필수)</span>            
 			 </label>
@@ -146,7 +146,7 @@
 		   </dd>
 		  </dl>
 		  <span class="custom_form"> 
-             <input type="checkbox" id="check2" name="checkRow"> 
+             <input type="checkbox" id="check2" name="checkRow" value="0"> 
              <label for="agree_all" class="ip_chk"> 
              <em></em> <span>개인정보 수집 및 이용 동의 (필수)</span>
 			 </label>
@@ -234,36 +234,41 @@
 	  
 	  // checkbox들
 	  var $checkboxes = $("input:checkbox[name='checkRow']");
-	  
+
 	  //  전체 이용약관 동의 체크 상태 (true:전체선택, false:전체해제)
 	  var check_status = $("#agree_all").is(":checked");
-	  
+
 	  if( check_status ) {
 		  // 전체 체크박스들 checked로 바꾸기
 		  $checkboxes.each(function() {
 			 this.checked = true; 
 		  });
-	  } else {
+
+	  } else {		  
 		  // 전체 체크박스를 checked 해제하기
 		  $checkboxes.each(function() {
 			 this.checked = false; 
 		  });
-	  }
+		  
+	  }	 
 	  
+
   }  
-  
-  
+ 
   
   
   $(document).ready(function() {
-	  
-	  /* 
-	  * 유효성 검사를 위해 필요한 유효성 체크 변수 
-	  */
+	  	  
+	  // 형태 변수 
  	  var form1 = /[a-zA-Z]/;
 	  var form2 = /[0-9]/;
-	  var form3 = /[~!@#$%^&*+-=?]/;
-	
+	  var form3 = /[~!@#$%^&*+-=?]/;	  
+
+	  // 회원가입 승인 여부 변수
+	  var validId = false, validName = false, validPw = false, validRepw = false, validBirth = false; validPhone = false;
+
+	  // =============================================================================================
+		   	  
 	  // [ 아이디 중복 체크 ] -- DB에 존재하는 데이터와 동일한지,특수문자와 NULL값 제한
 	  
 	  $("#id_for_join").focus(function(){
@@ -289,6 +294,7 @@
 				} else {
 					$("#valid_id").css("color", "green");
 					$("#valid_id").html(" 사용 가능한 아이디 입니다.");		
+					validId = true;
 				}
 			},
 			error : function() {
@@ -322,6 +328,7 @@
  			 } else {
  				$('#valid_pw').css("color", "green");
 				$('#valid_pw').html(" 사용가능한 비밀번호입니다."); 
+				validPw = true;
  			 }
  		 }   	 
  	  }); 
@@ -338,22 +345,22 @@
     	 var pw = $("#pw_for_join").val(); 
     	 var repw = $("#repw_for_join").val();
     	 
-    	 if( pw == repw && repw == null && repw == "") {
-				$('#repw_for_join').css("background-color", "#D0F5A9");  
-				
-    	 } else {
-    		 
-    		 if( repw == null && repw == "") {
- 				$('#repw_for_join').css("background-color", "#F8E0E0"); 
+    	 if(validPw){
+    		 if( pw == repw ){
+	 			 $('#repw_for_join').css("background-color", "#E0F8E6");  
+    			 validRepw = true;
+    		 } else {
+    			 if(repw == null && repw == "") {
+    	 				$('#repw_for_join').css("background-color", "#F8E0E0"); 
+    					$('#valid_repw').css("color", "red");
+    					$('#valid_repw').html(" 비밀번호 재확인을 하셔야 합니다.");  
+    		 } else if (pw != repw) {
+   				$('#repw_for_join').css("background-color", "#F8E0E0"); 
 				$('#valid_repw').css("color", "red");
-				$('#valid_repw').html(" 비밀번호 재확인을 하셔야 합니다.");        			 
-    		 
-    		 }else {
-  				$('#repw_for_join').css("background-color", "#F8E0E0"); 
-				$('#valid_repw').css("color", "red");
-				$('#valid_repw').html(" 비밀번호가 일치하지 않습니다."); 
+				$('#valid_repw').html(" 비밀번호가 일치하지 않습니다.");     			 
     		 }
-
+    	 }
+    		 
     	 }  
 		 
       });
@@ -370,6 +377,8 @@
 		 if ( form2.test(name) || form3.test(name) ) {
 				$('#valid_name').css("color", "red");
 				$('#valid_name').html(" 이름에는 숫자와 특수문자를 지원하지 않습니다.");         			 
+ 		 }else {
+ 			validName = true; 
  		 }
       });
       
@@ -396,6 +405,7 @@
      		 $("#valid_birth").html(" 만 18세 미만은 가입하실 수 없습니다.");
      	 } else {
      		 $('#valid_birth').html("");
+     		 validBirth = true;
      	 }
      	 
        });
@@ -407,16 +417,30 @@
 
     	   if( !(form2.test(mem_phone)) ){
     		   $("#phone_for_join").val('');
+    	   } else{
+    		   validPhone = true;
     	   }
+       });
+                                 
+       // [ 회원가입 폼 넘기기 ] 
+       
+       $("#submit").click(function(){
+    	   
+    		  // 체크박스 선택 여부를 위한 변수
+    		  var chk1 = $("#check1").is(":checked");
+    		  var chk2 = $("#check2").is(":checked");
+    	      
+    		  if( chk1 == true && chk2 == true && validId && validName && validPw && validRepw && validBirth){
+    	    	   $("#actionForm").attr("onsubmit", "return true;");
+    	    	   $("#actionForm").submit();
+    		  } else{
+    				alert("이용약관과 개인정보약관 체크와 빈칸 여부를 살펴주세요.");
+         		    return true; 
+    			    } 	 
        });
        
        
        
-       
-       
-       
-      
-	  
   });
   
   
