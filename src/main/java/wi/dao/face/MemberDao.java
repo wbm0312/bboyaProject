@@ -1,6 +1,9 @@
 package wi.dao.face;
 
-import wi.dto.Member;
+import java.util.Date;
+
+import wi.model.LoginDto;
+import wi.model.Member;
 
 public interface MemberDao {
 	
@@ -11,6 +14,11 @@ public interface MemberDao {
 	public String selectCheckId(String mem_id) throws Exception;
 	
 	// 로그인 처리
+	public Member login(LoginDto loginDto) throws Exception;
+	
+	// 로그인 유지
+	public void keepLogin(String mem_id, String sessionId, Date next) throws Exception;
+	
 
 	
 }

@@ -1,4 +1,4 @@
-package wi.dto;
+package wi.model;
 
 import java.sql.Date;
 

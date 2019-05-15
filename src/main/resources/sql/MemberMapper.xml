@@ -4,11 +4,11 @@
 <mapper namespace="MemberMapper">
 
 	<!-- 회원 등록 -->
-	<insert id="insertMember" parameterType="wi.dto.Member">
+	<insert id="insertMember" parameterType="wi.model.Member">
 		INSERT INTO member
-		(mem_case_no, mem_id, mem_pw, mem_name, mem_birth, mem_phone)
+		  (mem_case_no, mem_id, mem_pw, mem_name, mem_birth, mem_phone)
 		VALUES
-		(#{mem_case_no }, #{mem_id }, #{mem_pw }, #{mem_name }, #{mem_birth },#{mem_phone } )
+		  ( #{mem_case_no }, #{mem_id }, #{mem_pw }, #{mem_name }, #{mem_birth },#{mem_phone } )
 	</insert>
 
 	<!-- 아이디 중복체크 -->
@@ -16,6 +16,18 @@
 		SELECT mem_id FROM member
 		WHERE mem_id = #{mem_id}
 	</select>
+	
+	<!-- 로그인 처리 -->
+	<select id="login" resultType="wi.model.Member">
+	    SELECT * FROM member 
+	    WHERE mem_id = #{mem_id }
+	</select>
+	
+	<!-- 로그인 유지 -->
+	<update id="keepLogin">
+	    UPDATE member SET sessionkey = #{sessionId }, sessionlimit = #{next } 
+	    WHERE mem_id = #{mem_id }
+	</update>
 
 </mapper> 
 
